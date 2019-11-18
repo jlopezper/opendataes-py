@@ -42,4 +42,4 @@ class MakeURL:
 
     def path_explore_keyword(self, keyword):
         keyword = unidecode.unidecode(keyword)
-        return self.path_catalog_dataset("keyword/" + keyword)
+        return self.path_catalog_dataset("keyword/" + keyword) 
