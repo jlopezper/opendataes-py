@@ -37,9 +37,11 @@ class MakeURL:
     def path_dataset_id(self, id, params=""):
         url_parts = urlparse(self.path_datasets())
         current_path = url_parts.path
-        url_parts._replace(path=current_path + "/" + id, query=params)
+        url_parts = url_parts._replace(path=current_path + "/" + id, query=params)
         return url_parts.geturl()
 
     def path_explore_keyword(self, keyword):
         keyword = unidecode.unidecode(keyword)
         return self.path_catalog_dataset("keyword/" + keyword)
+
+    
