@@ -3,10 +3,10 @@ import unidecode
 
 
 class MakeURL:
-    def __init__(self):
+    def __init__(self, __scheme="https", __netloc="datos.gob.es/apidata"):
         # self.base_url = 'https://datos.gob.es/apidata'
-        self.__scheme = "https"
-        self.__netloc = "datos.gob.es/apidata"
+        self.__scheme =  __scheme #"https"
+        self.__netloc = __netloc #"datos.gob.es/apidata"
 
     def path_catalog(self, path, params="", query="", fragment=""):
         return urlunparse(
