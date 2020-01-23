@@ -27,7 +27,7 @@ def get_resp(url_req):
 
 def get_resp_paginated(url_req, num_pages=1, page=0):
 
-    whole_list = list()
+    whole_list = []
 
     while num_pages > 0:
         url_parts = urlparse(url_req)
@@ -48,6 +48,9 @@ def get_resp_paginated(url_req, num_pages=1, page=0):
         page += 1
         num_pages -= 1
 
-    parsed_response['result']['items'] = whole_list
+    parsed_response['result']['items'] = whole_list[:]
 
     return parsed_response
+
+
+
