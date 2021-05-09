@@ -1,6 +1,6 @@
 import requests
 from urllib.parse import urljoin, urlparse, urlunparse, urlsplit, urlencode
-from responses import get_resp_paginated
+from opendataes.responses import Responses
 import mimetypes
 
 
@@ -22,9 +22,9 @@ class ExtractData:
     def __init__(self, allowed_formats=[".csv"]):
         self.allowed_formats = allowed_formats
 
-
     def determine_readability(self, url_req):
-        resp = get_resp_paginated(url_req)
+        response = Responses()
+        resp = response.get_resp_paginated(url_req)
 
         if "distribution" not in resp["result"]["items"][0][0].keys():
             raise DistributionError("Exception occurred", "No format available")
@@ -42,8 +42,8 @@ class ExtractData:
             if all([value in url_values.keys(), key in self.allowed_formats]):
                 print(key)
 
-
     def extract_url_format(self, data_list):
+        # data_list = resp['result']['items'][0][0]
         try:
             if isinstance(data_list["distribution"], dict):
                 raw_formats = [data_list["distribution"]["format"]["value"]]
@@ -53,10 +53,11 @@ class ExtractData:
             raise DistributionError("Exception occurred", "No format available")
 
         raw_extensions = [mimetypes.guess_extension(i) for i in raw_formats]
-        correct_formats = list(set([x for x in raw_extensions if x in self.allowed_formats]))
+        correct_formats = list(
+            set([x for x in raw_extensions if x in self.allowed_formats])
+        )
 
         return correct_formats
-
 
     def extract_access_url(self, data_list):
         # resp['result']['items'][0][0]['distribution'][0]['accessURL']
@@ -70,7 +71,6 @@ class ExtractData:
 
         return access_url
 
-
     def extract_dataset_name(self, data_list):
         try:
             if isinstance(data_list["distribution"], dict):
@@ -82,7 +82,6 @@ class ExtractData:
 
         return title
 
-
     def extract_language(self, data_list):
         try:
             languages = [i["_lang"] for i in data_list["description"]]
@@ -90,36 +89,31 @@ class ExtractData:
             DistributionError("Exception occurred", "No languages available")
         return languages
 
-
     def extract_release_date(self, data_list):
         # for now, let's keep the date as string
         # but should be changed
-        if "issued" not in data_list:
+        if "issued" not in data_list.keys():
             return "No release date available"
         else:
             return data_list["issued"]
 
-
     def extract_modified_date(self, data_list):
-        if "modified" not in data_list:
+        if "modified" not in data_list.keys():
             return "No modification date available"
         else:
             return data_list["modified"]
 
-
     def extract_publisher_code(self, data_list):
-        if "publisher" in data_list:
+        if "publisher" in data_list.keys():
             return "No publisher available"
         else:
             return data_list["publisher"].split("/")[-1]
 
-
     def extract_publisher_name(self, data_list):
         """TO DO"""
 
-
     def extract_endpath(self, data_list):
-        if "_about" not in data_list:
+        if "_about" not in data_list.keys():
             return "No link to the data in datos.gob.es"
         else:
             data_list["_about"].split("/")[-1]
