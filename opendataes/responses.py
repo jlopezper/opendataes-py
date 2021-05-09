@@ -14,13 +14,14 @@ class Responses:
     def __init__(self):
         pass
 
-
     def get_resp(self, url_req):
 
         rq = requests.get(url_req, verify=False)
 
         if rq.status_code != 200:
-            raise BadStatusCode(f"Not successful request. Returned code: {rq.status_code}")
+            raise BadStatusCode(
+                f"Not successful request. Returned code: {rq.status_code}"
+            )
 
         try:
             rq.json()
@@ -28,7 +29,6 @@ class Responses:
             raise BadJSONParsing("Returned format is unusual and not JSON")
 
         return rq.json()
-
 
     def get_resp_paginated(self, url_req, num_pages=1, page=0):
 
@@ -42,20 +42,18 @@ class Responses:
 
             parsed_response = self.get_resp(url_req_query.geturl())
 
-            data_list = parsed_response['result']['items']
+            data_list = parsed_response["result"]["items"]
             whole_list.append(data_list)
 
             try:
-                parsed_response['result']['next']
+                parsed_response["result"]["next"]
             except:
                 break
 
             page += 1
             num_pages -= 1
 
-        parsed_response['result']['items'] = whole_list[:]
+        parsed_response["result"]["items"] = whole_list[:]
 
         return parsed_response
-
-
 
